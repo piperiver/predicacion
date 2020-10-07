@@ -1,0 +1,6 @@
+{
+    "require": {
+        "oasin/db" : "dev-master",
+        "andreapollastri/crossroad": "^0.2.0"
+    }
+}
