@@ -1,0 +1,153 @@
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.demo-ribbon {
+  width: 100%;
+  height: 40vh;
+  background-color: #3F51B5;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+
+.demo-main {
+  margin-top: -35vh;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+
+.demo-header .mdl-layout__header-row {
+  padding-left: 40px;
+}
+
+.demo-container {
+  max-width: 1600px;
+  width: calc(100% - 16px);
+  margin: 0 auto;
+}
+
+.demo-content {
+  border-radius: 2px;
+  padding: 25px 50px;
+  margin-bottom: 80px;
+}
+
+.demo-layout.is-small-screen .demo-content {
+  padding: 40px 28px;
+  padding-bottom: 110px;
+}
+
+.demo-content h3 {
+  margin-top: 48px;
+}
+
+.demo-footer {
+  padding: 32px 0;
+  text-align: center;
+  display: block;
+}
+
+.demo-footer .mdl-mini-footer--link-list a {
+  font-size: 13px;
+}
+
+/** Estilos Felipe Rivera **/
+.text-center{
+  text-align: center !important;
+}
+
+.bg-verde{
+  background-color: #27AE60 !important;
+  color: #fff;
+}
+.bg-rojo{
+  background-color: #E74C3C !important;
+  color: #fff;
+}
+.bg-amarillo{
+  background-color: #F39C12 !important;
+  color: #fff;
+}
+.bg-azul{
+  background-color: #3f51b5 !important;
+  color: #fff;
+}
+
+.text-verde{
+  color: #27AE60 !important;
+}
+.text-amarillo{
+  color: #F39C12 !important;
+}
+.text-rojo{
+  color: #E74C3C !important;
+}
+.swal-text{
+  text-align: center;
+}
+
+.mdl-button[disabled][disabled]{
+  opacity: 0.7 !important;
+  color: #fff !important;
+  cursor: not-allowed !important;
+}
+body{
+  font-size: 16px;
+}
+.swal-button.swal-button--cancel{
+  background-color: #E74C3C !important;
+  color: #fff;
+}
+.swal-button.swal-button--confirm{
+  background-color: #3f51b5 !important;
+}
+.demo-main{
+  padding-bottom: 113px;
+}
+footer{
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+@media (max-width: 320px) {
+  .mdl-cell{
+      margin: 0 auto;
+      width: calc(100% - 0px);
+  }
+  .dataTables_info{
+      padding: 0 5px;
+  }
+  .mdl-layout__header-row{
+      padding: 0 !important;
+  }
+}
+
+@media (max-width: 425px) {
+ 
+  h1{
+      font-size: 40px;
+  }
+  .mdl-layout-title{
+      width: 100%;
+      text-align: center;
+      font-size: 0;
+  }
+  .mdl-layout-title::before{
+      content: 'Predicación Cong Cañaverales';
+      font-size: 20px;
+  }
+}

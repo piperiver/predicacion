@@ -1,0 +1,31 @@
+.myTable {
+  margin: 15px 0 !important;
+}
+.myTable th,
+.myTable td{
+    padding: 0px 10px !important;
+}
+.dataTables_length,
+.dataTables_filter {
+  margin-bottom: 15px !important;
+}
+.content-button{
+    margin-bottom: 15px;
+}
+.myTable *{
+    font-size: 16px !important;
+}
+.myselect{
+    width: 100%;
+    padding: 4px;
+    max-width: 160px;
+  }
+
+  @media (max-width: 425px) {
+    .demo-layout.is-small-screen .demo-content{
+        padding: 5px 0 !important;
+    }
+    h1{
+        font-size: 40px;
+    }
+  }
