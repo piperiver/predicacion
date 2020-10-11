@@ -215,8 +215,8 @@ $(document).on("click", "#btn-save-user", function () {
 
 $(document).on("change", ".updateUser", function () {
   const user = $(this).data("user");
-  const update_admin = $("#update_admin_" + user).val();
-  const update_active = $("#update_active_" + user).val();
+  const update_admin = $(this).parent().parent().parent().find(".admin").val();
+  const update_active = $(this).parent().parent().parent().find(".active").val();
 
   $.post(
     dominio + "ActualizarUsuario",
@@ -281,7 +281,6 @@ $(function () {
   }
 
   $(".myTable").DataTable({
-    responsive: true,
     language: {
       sProcessing: "Procesando...",
       sLengthMenu: "Mostrar _MENU_ registros",
