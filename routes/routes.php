@@ -6,6 +6,9 @@ use Andr3a\Crossroad;
 $routes = New Crossroad();
 
 
+/**
+ * VISTAS
+ */
 $routes->add('/Predicacion/',function() {
   $controller = new Controller();  
   $controller->predicacion();
@@ -15,6 +18,25 @@ $routes->add('/Admin55210/',function() {
   $controller = new Controller();  
   $controller->administracion();
 }, "get");
+
+$routes->add('/Login/',function() {
+  $controller = new Controller(false);  
+  $controller->login();
+}, "get");
+
+
+/**
+ * ACCIONES
+ */
+$routes->add('/Salir/',function() {
+  $controller = new Controller();  
+  echo $controller->cerrarSesion();
+}, "get", "api");
+
+$routes->add('/IniciarSesion/',function() {
+  $controller = new Controller(false);  
+  echo $controller->iniciarSesion();
+}, "post", "api");
 
 $routes->add('/GuardarTelefonos/',function() {
   $controller = new Controller();  
@@ -31,10 +53,28 @@ $routes->add('/CambiarEstado/([0-9]*)/',function($request) {
   echo $controller->updateEstado($request);
 }, "post", "api");
 
-$routes->add('/GuardarTelefonos/([0-9]*)/',function($request) {
-  var_dump($request, $_POST);
-  die("termine");
+$routes->add('/GuardarUsuario/',function() {
+  $controller = new Controller();  
+  echo $controller->guardarUsuario();
 }, "post", "api");
 
-$routes->run("/predicacion/index.php");
-// $routes->run("/");
+$routes->add('/ActualizarUsuario/',function() {
+  $controller = new Controller();  
+  echo $controller->actualizarUsuario();
+}, "post", "api");
+
+
+$routes->add('/jwt/',function() {
+  $controller = new Controller();  
+  $controller->jwt();
+}, "get", "api");
+
+$routes->add('/verificar/',function() {
+  $controller = new Controller();  
+  $controller->jwt_verificar();
+}, "get", "api");
+
+
+
+$routes->run("/predicacion");
+// $routes->run("/index.php");

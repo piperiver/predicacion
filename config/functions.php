@@ -16,7 +16,8 @@ function dominio($ruta){
 }
 
 function ruta($ruta){
-    return constantes("DOMINIO")."index.php/".$ruta;
+    // return constantes("DOMINIO")."index.php/".$ruta;
+    return constantes("DOMINIO").$ruta;
 }
 
 
@@ -41,4 +42,38 @@ function response_json($status, $message, $data = false){
         "message" => $message,
         "data" => $data
     ]);
+}
+
+function is_session(){
+    if(!isset($_SESSION["usuario"])){
+        return false;
+    }
+    return true;
+}
+
+function is_admin(){
+    if(!is_session()){
+        return false;
+    }
+
+    if(isset($_SESSION["usuario"]) && isset($_SESSION["usuario"]->admin) && $_SESSION["usuario"]->admin){
+        return true;
+    }
+
+    return false;
+}
+
+function is_ajax(){
+    $isAjaxRequest = false;
+ 
+    //IF HTTP_X_REQUESTED_WITH is equal to xmlhttprequest
+    if(
+        isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+        strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'xmlhttprequest') == 0
+    ){
+        //Set our $isAjaxRequest to true.
+        $isAjaxRequest = true;
+    }
+
+    return $isAjaxRequest;
 }

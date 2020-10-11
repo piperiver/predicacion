@@ -14,6 +14,9 @@ $(document).on("click", ".btn-estado", function () {
     dominio + "CambiarEstado/" + telefono.id,
     { estado: estado },
     function (response) {
+
+      redirect_for_session(response);
+
       if (!response.status) {
         swal(response.message, "", "error");
         return;
@@ -54,6 +57,7 @@ function confirmacion() {
 
 function obtenerTelefono() {
   $.post(dominio + "ObtenerTelefono", function (response) {
+    redirect_for_session(response);
     if (!response.status) {
       bloquear_botones();
       swal(response.message, "", "error");
@@ -98,6 +102,7 @@ $(document).on("change", ".admin-estado", function () {
     dominio + "CambiarEstado/" + data.idtelefono,
     { estado: data.estado },
     function (response) {
+      redirect_for_session(response);
       if (!response.status) {
         swal(response.message, "", "error");
         return;
@@ -112,6 +117,7 @@ function guardarTelefonos(value) {
   $.post(dominio + "GuardarTelefonos", { telefonos: value }, function (
     response
   ) {
+    redirect_for_session(response);
     if (!response.status) {
       swal(response.message, "", "error");
       return;
@@ -160,8 +166,122 @@ $(document).on("change, keyup", "#inputTelefonos", function () {
   $(this).val(telefonos);
 });
 
+$(document).on("click", "#btn-create-user", function () {
+  dialog.showModal();
+});
+
+function mostrarErroresUsuario(mensaje) {
+  $(".errores").text(mensaje);
+  $(".errores").fadeIn();
+}
+
+$(document).on("click", "#btn-save-user", function () {
+  $(".errores").hide();
+
+  const username = $("#username").val();
+  const password = $("#password").val();
+  const admin = $("#is_admin").is(":checked");
+
+  if ($.trim(username) == "" || $.trim(password) == "") {
+    mostrarErroresUsuario(
+      "Asegúrece de diligenciar todos los campos del formulario"
+    );
+  }
+
+  $.post(
+    dominio + "GuardarUsuario",
+    {
+      username: username,
+      password: password,
+      admin: admin ? 1 : 0,
+    },
+    function (response) {
+      redirect_for_session(response);
+      if (!response.status) {
+        mostrarErroresUsuario(response.message);
+        return;
+      }
+
+      dialog.close();
+      swal(response.message, "", "success").then((value) => {
+        $("#username").val("");
+        $("#password").val("");
+        $("#is_admin").attr("checked", false);
+        window.location.reload();
+      });
+    }
+  );
+});
+
+$(document).on("change", ".updateUser", function () {
+  const user = $(this).data("user");
+  const update_admin = $("#update_admin_" + user).val();
+  const update_active = $("#update_active_" + user).val();
+
+  $.post(
+    dominio + "ActualizarUsuario",
+    {
+      user: user,
+      active: update_active,
+      admin: update_admin
+    },
+    function (response) {
+      redirect_for_session(response);
+      if (!response.status) {
+        swal(response.message, "", "error");
+        return;
+      }
+
+      swal(response.message, "", "success");
+    }
+  );
+});
+
+$(document).on("click", "#btn-login", function(){
+  const username = $("#login_username").val();
+  const password = $("#login_password").val();
+
+  if ($.trim(username) == "" || $.trim(password) == "") {
+    swal("Asegurece de escribir el usuario y la contraseña", "", "error");
+      return;
+  }
+
+  $.post(
+    dominio + "IniciarSesion",
+    {
+      username: username,
+      password: password
+    },
+    function (response) {
+      redirect_for_session(response);
+      if (!response.status) {
+        swal(response.message, "", "error");
+        return;
+      }
+
+      swal(response.message, "", "success").then((value) => {
+        window.location.href = response.data.redirect;
+      });
+    }
+  );
+
+
+})
+
+function redirect_for_session(response){
+  if(typeof response.data.redirect_for_session != "undefined"){
+    window.location.href = response.data.redirect_for_session;
+  }
+}
+
 $(function () {
+
+  if(typeof login != "undefined" && login){
+    swal("Escriba el usuario y la contraseña, luego presione el botón 'ENTRAR'", "", "warning");
+  }
+
   $(".myTable").DataTable({
+    responsive: true,
     language: {
       sProcessing: "Procesando...",
       sLengthMenu: "Mostrar _MENU_ registros",

@@ -48,7 +48,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-red.min.css">
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css"> -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.css"/>
 
 
     <link rel="stylesheet" href="<?= dominio("assets/styles.css") ?>">
@@ -65,19 +66,78 @@
     </style>
   </head>
   <body>
+
+
+  <dialog class="mdl-dialog">
+  <h4 class="mdl-dialog__title text-center">Creación de usuario</h4>
+  <div class="mdl-dialog__content">
+  <!-- imput username   -->
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" type="text" id="username">
+    <label class="mdl-textfield__label" for="sample3">Usuario</label>
+  </div>
+
+  <!-- input password -->
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <input class="mdl-textfield__input" type="password" id="password">
+    <label class="mdl-textfield__label" for="sample3">Contrase&ntilde;a</label>
+  </div>
+
+  <!-- input is admin -->
+    <label for="is_admin">Administrador</label>
+    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="is_admin">
+      <input type="checkbox" id="is_admin" class="mdl-switch__input" value="true">
+      <span class="mdl-switch__label"></span>
+    </label>
+    
+    <div class="errores" style="display: none">
+      
+    </div>
+
+  </div>
+  <div class="mdl-dialog__actions ">
+    <button type="button" class="mdl-button bg-azul" id="btn-save-user">Guardar</button>
+    <button type="button" class="mdl-button bg-rojo close">Cancelar</button>
+  </div>
+</dialog>
+
+
+
     <div class="demo-layout mdl-layout mdl-layout--fixed-header mdl-js-layout mdl-color--grey-100">
       <header class="demo-header mdl-layout__header mdl-layout__header--scroll mdl-color--grey-100 mdl-color-text--grey-800">
         <div class="mdl-layout__header-row">
           <span class="mdl-layout-title">Predicaci&oacute;n Congregaci&oacute;n Ca&ntilde;averales</span>
           <div class="mdl-layout-spacer"></div>
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" style="display:none">
-            <label class="mdl-button mdl-js-button mdl-button--icon" id="search-telefono" for="search">
-              <i class="material-icons">search</i>
-            </label>
-            <div class="mdl-textfield__expandable-holder">
-              <input class="mdl-textfield__input" type="text" id="search">
-              <label class="mdl-textfield__label" for="search">Enter your query...</label>
-            </div>
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable content-menu">
+            <!-- Right aligned menu below button -->
+            <button id="demo-menu-lower-right"
+                    class="mdl-button mdl-js-button mdl-button--icon">
+              <i class="material-icons">more_vert</i>
+            </button>
+
+            <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect opciones-menu"
+                for="demo-menu-lower-right">
+                <?php if(is_admin()){ ?>
+                  <li class="mdl-menu__item"><a href="<?= ruta("Admin55210") ?>">Administraci&oacute;n</a></li>
+                  <li class="mdl-menu__item"><a href="<?= ruta("Predicacion") ?>">Predicaci&oacute;n</a></li>
+                <?php } ?>
+
+                <?php if(is_session()){ ?>
+                  <li class="mdl-menu__item"><a href="<?= ruta("Salir") ?>">Salir</a></li>
+                <?php } ?>
+            </ul>
+
+
+            <!-- <ul class="opciones-menu">
+              <?php if(is_admin()){ ?>
+              <li><a href="<?= ruta("Administracion") ?>">Administraci&oacute;n</a></li>
+              <li><a href="<?= ruta("Predicacion") ?>">Predicaci&oacute;n</a></li>
+              <?php } ?>
+
+              <?php if(is_session()){ ?>
+                <li><a href="<?= ruta("Salir") ?>">Salir</a></li>
+                <?php } ?>
+            </ul> -->
           </div>
         </div>
       </header>
@@ -109,10 +169,21 @@
     crossorigin="anonymous"></script>
 
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <!-- <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script> -->
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.js"></script>
 
     <script>
       const dominio = "<?= ruta("") ?>";
+
+      var dialog = document.querySelector('dialog');
+    
+      if (!dialog.showModal) {
+        dialogPolyfill.registerDialog(dialog);
+      }
+    
+      dialog.querySelector('.close').addEventListener('click', function() {
+        dialog.close();
+      });
     </script>
     <script src="<?= dominio("assets/script.js") ?>"></script>
   </body>

@@ -10,11 +10,18 @@ class Controller {
 
     private $db;
     private $view;
+    private $validate_sesion;
 
-    function __construct(){
+    function __construct($validate_sesion = true){
         $this->initHandlerErrors();
         $this->db = Database::connect();
         $this->view = new Views();
+        $this->validate_sesion = $validate_sesion;
+
+        
+        if($this->validate_sesion){
+            $this->validar_sesion();
+        }
     }
 
     function initHandlerErrors(){
@@ -31,11 +38,20 @@ class Controller {
         $run->register();
     }
 
+    function login(){
+        $this->validar_sesion("login");
+        $this->view->render("login.php", []);
+    }
+
     function predicacion(){
+        $this->validar_sesion("predicacion");
         $this->view->render("predicacion.php", []);
     }
 
     function administracion(){
+        $this->validar_sesion("administracion");
+        $usuarios = self::getDataUsers();
+
         $sql = "SELECT 
                     estados.nombre,
                     telefonos.telefono,
@@ -50,7 +66,7 @@ class Controller {
         $telefonos = $query->results();
         $estados = $this->obtenerEstados()->results();
         
-        $this->view->render("administracion.php", ["telefonos" => $telefonos, "estados" => $estados]);
+        $this->view->render("administracion.php", ["telefonos" => $telefonos, "estados" => $estados, "usuarios" => $usuarios]);
     }
 
     function consultaTelefonos($query_update = true){
@@ -272,6 +288,139 @@ class Controller {
             return response_json(false, "Error: Linea: ".$ex->getLine().", Mensaje: ".$ex->getMessage());
         }
         return response_json(false, "Ocurrio un problema interno, recargue la pagina por favor");
+    }
+
+    /**
+     * GESTION DE USUARIOS
+     */
+
+     function guardarUsuario(){
+        try {
+            //code...
+            if(!isset($_POST["username"]) || !isset($_POST["password"]) || !isset($_POST["admin"])){
+                return response_json(false, "Ocurrio un problema interno, recargue la pagina por favor");
+            }
+
+            $usuario = $_POST["username"];
+            $usuario_bd = $this->db->table('usuarios')->where("usuario", $usuario)->select()->first();
+            if($usuario_bd != null){
+                return response_json(false, "El usuario que intenta crear ya existe, intente con otro usuario diferente a '$usuario'");
+            }
+
+            $this->db->table('usuarios')->insert([
+                "usuario" => $usuario,
+                "password" => password_hash($_POST["password"], PASSWORD_DEFAULT),
+                "admin" => $_POST["admin"],
+                "active" => true
+            ]);
+
+            return response_json(true, "Usuario creado con exito");
+        
+        } catch (\Exception $ex) {
+            return $this->messageError($ex);
+        }
+
+     }
+
+    function getDataUsers(){
+        return $this->db->table('usuarios')->select();
+    }
+
+    function actualizarUsuario(){
+        try {
+            if(!isset($_POST["user"]) || !isset($_POST["admin"]) || !isset($_POST["active"])){
+                return response_json(false, "Ocurrio un problema interno, recargue la pagina por favor");
+            }
+
+            $this->db->table('usuarios')
+                ->where('id', $_POST["user"])
+                ->update(["admin" => $_POST["admin"], "active" => $_POST["active"]]);
+
+                return response_json(true, "Usuario modificado con exito");
+
+        } catch (\Exception $ex) {
+            return $this->messageError($ex);
+        }
+    }
+
+    function iniciarSesion(){
+        if(!isset($_POST["username"]) || !isset($_POST["password"])){
+            return response_json(false, "Ocurrio un problema interno, recargue la pagina por favor");
+        }
+
+        $usuario_bd = $this->db->table('usuarios')->where("usuario", $_POST["username"])->select()->first();
+        
+        if($usuario_bd == null){
+            return response_json(false, "Usuario o contraseña incorrecta");
+        }
+        
+        if(!password_verify($_POST["password"], $usuario_bd->password)){
+            return response_json(false, "Usuario o contraseña incorrecta");
+        }
+
+        if(!$usuario_bd->active){
+            return response_json(false, "El Usuario se encuentra inactivo");
+        }
+
+        $_SESSION["usuario"] = $usuario_bd;
+
+        $url = $this->accesoUsuario($usuario_bd->admin);
+
+        return response_json(true, "¡Bienvenido!", ["redirect" => $url]);
+
+    }
+
+    function accesoUsuario($admin){
+        if($admin === null)
+            return ruta("Login");
+
+        return ($admin)? ruta("Admin55210") : ruta("Predicacion");
+    }
+
+    function validar_sesion($vista = ""){
+        $infoUsuario = isset($_SESSION["usuario"])? $_SESSION["usuario"] : false;
+
+        //si no inicio sesion y quiere entrar al login: se deja entrar al login
+        if($infoUsuario == false && $vista == "login"){
+            return true;
+        }
+
+        //Si no hay sesion y quiere acceder a una vista distinta al login: se redirecciona al login
+        if($infoUsuario == false && $vista != "login"){
+            if(is_ajax()){
+                echo response_json(false, "", ["redirect_for_session" => ruta("Login")]);
+                die;
+            }
+            header("Location: ".ruta("Login"));
+        }
+
+        if($infoUsuario != false){
+            //Se obtiene la ruta de la vista a la que puede acceder, dependiendo si es administrador o no
+            $isAdmin = (isset($infoUsuario->admin))? $infoUsuario->admin : null;
+            $ruta = $this->accesoUsuario($isAdmin);
+            //Si esta logueado y quiere acceder al login: se redirecciona a la vista inicial de acceso
+            if($vista == "login"){
+                if(is_ajax()){
+                    echo response_json(false, "", ["redirect_for_session" => $ruta]);
+                    die;
+                }
+                header("Location: $ruta");
+            }
+
+            if(!$isAdmin && $vista == "administracion"){
+                if(is_ajax()){
+                    echo response_json(false, "", ["redirect_for_session" => ruta("Predicacion")]);
+                    die;
+                }
+                header("Location: ".ruta("Predicacion"));
+            }
+        }
+        
+    }
+
+    function cerrarSesion(){
+        unset($_SESSION["usuario"]);
+        header("Location: ".ruta("Login"));
     }
 }
 

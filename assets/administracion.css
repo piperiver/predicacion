@@ -1,5 +1,6 @@
 .myTable {
   margin: 15px 0 !important;
+  width: 100% !important;
 }
 .myTable th,
 .myTable td{
@@ -27,5 +28,8 @@
     }
     h1{
         font-size: 40px;
+    }
+    table.dataTable>tbody>tr.child ul.dtr-details{
+      display: block !important;
     }
   }
