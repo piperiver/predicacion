@@ -220,9 +220,9 @@ $(document).on("click", "#btn-save-user", function () {
 
 $(document).on("change", ".updateUser", function () {
   const user = $(this).data("user");
-  const update_admin = $(this).parent().parent().parent().find(".admin").val();
-  const update_active = $(this).parent().parent().parent().find(".active").val();
-
+  const update_admin = $(this).parent().parent().find(".admin").val();
+  const update_active = $(this).parent().parent().find(".active").val();
+    
   $.post(
     dominio + "ActualizarUsuario",
     {
@@ -330,12 +330,15 @@ function initTable(id){
       },
     },
   });
-
-  
- 
-    
-
 }
+
+$(document).ajaxStart(function() {
+  $(".contet-loading").fadeIn();
+});
+
+$(document).ajaxComplete(function() {
+  $(".contet-loading").fadeOut();
+});
 
 $(function () {
 
@@ -345,6 +348,5 @@ $(function () {
 
   initTable("#tableTelefonos");
   initTable("#tableUsuarios");
-
   
 });

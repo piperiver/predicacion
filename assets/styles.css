@@ -159,6 +159,28 @@ footer{
 .search_filter{
   margin-bottom: 10px;
 }
+.contet-loading{
+  position: fixed;
+  z-index: 10000000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #fffffff0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.contet-loading .text-loading{
+  font-weight: bold;
+  font-size: 25px;
+}
+.contet-loading .mdl-spinner{
+  width: 80px;
+  height: 80px;
+  margin-top: 25px;
+}
 @media (max-width: 320px) {
   .mdl-cell{
       margin: 0 auto;

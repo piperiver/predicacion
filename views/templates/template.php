@@ -68,7 +68,12 @@
   </head>
   <body>
 
-
+    <div class="contet-loading" style="display: none">
+      <div>
+        <div class="text-loading">Espere por favor...</div>
+        <div class="mdl-spinner mdl-js-spinner is-active"></div>
+      </div>
+    </div>
   <dialog class="mdl-dialog">
   <h4 class="mdl-dialog__title text-center">Creación de usuario</h4>
   <div class="mdl-dialog__content">
