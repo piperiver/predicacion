@@ -1,7 +1,10 @@
 <link rel="stylesheet" href="<?= dominio("assets/predicacion.css") ?>">
 
-<div class="text-center">
+<div class="text-center content-telefonos-llamada">
     <h1 class="text-center" id="text-telefono">0</h1>
+    <a href="tel:+0" id="accion-llamada" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+        <img src="<?= dominio("assets/images/call.svg") ?>" alt="" srcset="">
+    </a>
 </div>
 <div class="text-center" id="content-text-estado" style="display: none">
     <p id="text-estado">El numero de telefono quedo marcado como</p>

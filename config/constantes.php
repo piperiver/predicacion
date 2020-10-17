@@ -5,10 +5,21 @@ return [
     /**
      * ESTADOS TELEFONOS
      */
-    "ACTIVO" => 5,
+    "INACTIVO" => 1,
     "REVISITA" => 2,
     "NO_LLAMAR" => 3,
-    "INACTIVO" => 1,
+    "ACTIVO" => 5,
+
+
+    /**
+     * Label estados
+     */
+    "ESTADO_TEXT" => [
+        "1" => "INACTIVO",
+        "2" =>  "REVISITA",
+        "3" =>  "NO_LLAMAR",
+        "5" => "ACTIVO",
+    ],
 
     /**
      * TELEFONO USADO O DISPONIBLE

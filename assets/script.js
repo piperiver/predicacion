@@ -67,9 +67,12 @@ function obtenerTelefono() {
     if (!response.data) {
       bloquear_botones();
       $("#text-telefono").text("No hay más números");
+      $("#accion-llamada").attr("href", "#?");
+      
       swal(response.message, "", "warning");
       return;
     }
+
 
     $("#content-text-estado").hide();
     desbloquear_botones();
@@ -78,6 +81,8 @@ function obtenerTelefono() {
     swal(response.message, "", "success").then((value) => {
       $("#text-telefono").fadeOut(function () {
         $("#text-telefono").text(telefono.telefono);
+        let complemento = (telefono.telefono.length <= 7)? "032" : "";
+        $("#accion-llamada").attr("href", "tel:"+complemento+""+telefono.telefono);
       });
       $("#text-telefono").fadeIn();
     });
@@ -274,21 +279,33 @@ function redirect_for_session(response){
   }
 }
 
-$(function () {
 
-  if(typeof login != "undefined" && login){
-    swal("Escriba el usuario y la contraseña, luego presione el botón 'ENTRAR'", "", "warning");
-  }
+function initTable(id){
+  $(id+' thead tr').clone(true).appendTo( id+' thead' );
+    $(id+' thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<input type="text" class="search_filter" placeholder="Buscar '+title+'" />' );
+ 
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
 
-  $(".myTable").DataTable({
+  let table = $(id).DataTable({
+    orderCellsTop: true,
     language: {
       sProcessing: "Procesando...",
       sLengthMenu: "Mostrar _MENU_ registros",
       sZeroRecords: "No se encontraron resultados",
       sEmptyTable: "Ningún dato disponible en esta tabla",
       sInfo:
-        "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-      sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "Mostrando del _START_ al _END_ de _TOTAL_ registros",
+      sInfoEmpty: "Mostrando del 0 al 0 de 0 registros",
       sInfoFiltered: "(filtrado de un total de _MAX_ registros)",
       sInfoPostFix: "",
       sSearch: "Buscar:",
@@ -313,4 +330,21 @@ $(function () {
       },
     },
   });
+
+  
+ 
+    
+
+}
+
+$(function () {
+
+  if(typeof login != "undefined" && login){
+    swal("Escriba el usuario y la contraseña, luego presione el botón 'ENTRAR'", "", "warning");
+  }
+
+  initTable("#tableTelefonos");
+  initTable("#tableUsuarios");
+
+  
 });

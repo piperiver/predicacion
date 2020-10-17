@@ -11,7 +11,7 @@
 </div>
 
 <div class="table-responsive">
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp my-table myTable">
+  <table id="tableUsuarios" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp my-table myTable">
     <thead>
       <tr>
         <th class="text-center">Usuario</th>
@@ -25,13 +25,13 @@
           <tr>
               <td class="text-center"><?= $usuario->usuario ?></td>
               <!-- <td class="text-center"><?= $usuario->fecha_creacion ?></td> -->
-              <td class="text-center">
+              <td class="text-center" data-search="<?= ($usuario->admin)? "SI" : "NO" ?>">
                   <select class="myselect updateUser admin" data-user="<?= $usuario->id ?>">
                     <option value='1' <?= ($usuario->admin)? "selected" : "" ?>>SI</option>
                     <option value="0" <?= (!$usuario->admin)? "selected" : "" ?>>NO</option>
                   </select>
               </td>
-              <td class="text-center">
+              <td class="text-center" data-search="<?= ($usuario->active)? "SI" : "NO" ?>">
                   <select class="myselect updateUser active" data-user="<?= $usuario->id ?>">
                     <option value="1" <?= ($usuario->active)? "selected" : "" ?>>SI</option>
                     <option value="0" <?= (!$usuario->active)? "selected" : "" ?>>NO</option>
@@ -58,7 +58,7 @@
 </div>
 
 <div class="table-responsive">
-  <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp my-table myTable">
+  <table id="tableTelefonos" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp my-table myTable">
     <thead>
       <tr>
         <th>Teléfono</th>
@@ -67,11 +67,29 @@
       </tr>
     </thead>
     <tbody>
+    <!-- <tr>
+      <td>
+          <input type="text" placeholder="Buscar por '+title+'" />
+      </td>
+      <td>
+          <select>
+            <option value="SI">SI</option>
+            <option value="NO">NO</option>
+          </select>
+      </td>
+      <td>
+        <select>
+            <?php foreach($data["estados"] as $estado){ ?>
+                <option value='<?= $estado->id ?>' ><?= $estado->nombre ?></option>
+            <?php } ?>
+        </select>
+      </td>
+    </tr> -->
         <?php foreach ($data["telefonos"] as $telefono) { ?>
           <tr data-idtelefono="<?= $telefono->id ?>">
               <td><?= $telefono->telefono ?></td>
               <td class="text-center"><?= ($telefono->usado)? "SI" : "NO" ?></td>
-              <td class="text-center">
+              <td class="text-center" data-search="<?= constantes("ESTADO_TEXT")[$telefono->estado] ?>">
                   <select class="myselect admin-estado">
                       <?php foreach($data["estados"] as $estado){ ?>
                           <!-- <option value='{"estado": <?= $estado->id ?>, "idtelefono": <?= $telefono->id ?>}'  <?= ($estado->id == $telefono->estado)? 'selected' : '' ?>><?= $estado->nombre ?></option> -->

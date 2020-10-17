@@ -25,3 +25,12 @@
   font-size: 18px;
   font-weight: bold;
 }
+.content-telefonos-llamada{
+  margin-bottom: 24px;
+}
+#text-telefono{
+  margin-bottom: 0;
+}
+#accion-llamada{
+  width: 30px;
+}

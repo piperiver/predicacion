@@ -13,3 +13,7 @@
     min-height: 350px;
     padding-top: 0 !important;
   }
+
+  .content-menu{
+    display: none;
+  }
