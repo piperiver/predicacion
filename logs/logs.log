@@ -1,0 +1,10 @@
+
+2020-10-25 11:01:47 => Proceso ejecutado con exito
+2020-10-25 11:20:29 => Proceso ejecutado con exito
+2020-10-25 11:43:55 => Error en el cambio de estado. Estado fallido: 1. [Linea => 43] - [Mensaje => SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key = 'PREDICACION_STATUS'' at line 1]
+2020-10-25 11:48:28 => Cambio de estado realizado correctamente. Nuevo estado: 1
+2020-10-25 11:49:02 => Cambio de estado realizado correctamente. Nuevo estado: 1
+2020-10-25 11:54:20 => Cambio de estado realizado correctamente. Nuevo estado: 1
+2020-10-25 11:54:28 => Cambio de estado realizado correctamente. Nuevo estado: 1
+2020-10-25 12:07:37 => Cambio de estado realizado correctamente. Nuevo estado: 
+2020-10-25 12:09:08 => Cambio de estado realizado correctamente. Nuevo estado: 0

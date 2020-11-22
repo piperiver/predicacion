@@ -24,6 +24,12 @@ $routes->add('/Login/',function() {
   $controller->login();
 }, "get");
 
+$routes->add('/ChangeStatusPlatform/',function() {
+  $controller = new Controller(false);  
+  $controller->changeStatusPlatform();
+}, "get");
+
+
 
 /**
  * ACCIONES

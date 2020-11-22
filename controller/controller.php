@@ -13,6 +13,8 @@ class Controller {
     private $validate_sesion;
 
     function __construct($validate_sesion = true){
+        date_default_timezone_set('America/Bogota');
+
         $this->initHandlerErrors();
         $this->db = Database::connect();
         $this->view = new Views();
@@ -95,6 +97,10 @@ class Controller {
      */
     function obtenerTelefono(){
         try {
+
+            if($this->getStatus() != "1"){
+                return response_json(true, "En este momento no puede predicar porque no es un horario de predicación. La aplicación solo esta activa en horarios de predicación");
+            }
             
             $telefono = $this->consultaTelefonos();            
 
@@ -421,6 +427,53 @@ class Controller {
     function cerrarSesion(){
         unset($_SESSION["usuario"]);
         header("Location: ".ruta("Login"));
+    }
+
+    function getStatus(){
+        $parametro = $this->db->table('parametros')
+                        ->where('id', 1)
+                        ->select()->first();
+        return $parametro->valor;
+    }
+
+    function changeStatusPlatform(){
+        try {
+        
+            $horariosPermitidos = [
+                [
+                    "fechaInicio" => strtotime(date("Y-m-d 08:00:00")),
+                    "fechaFin" => strtotime(date("Y-m-d 12:00:00"))
+                ],
+                [
+                    "fechaInicio" => strtotime(date("Y-m-d 14:00:00")),
+                    "fechaFin" => strtotime(date("Y-m-d 20:00:00"))
+                ]
+            ];
+
+            $fechaActual = strtotime("now");
+            $permitir = 0;
+            foreach ($horariosPermitidos as $horario) {
+                if($fechaActual >= $horario['fechaInicio'] && $fechaActual <= $horario['fechaFin']){
+                    $permitir = 1;
+                }
+            }
+
+            
+            $this->db->table('parametros')
+                    ->where('id', 1)
+                    ->update(["valor" => $permitir]);
+
+            if(!is_dir('./logs')){
+                mkdir('./logs');
+            }
+            
+            $fecha = date('Y-m-d H:i:s');
+            error_log("\n$fecha => Cambio de estado realizado correctamente. Nuevo estado: $permitir", 3, "./logs/logs.log");
+
+        } catch (\Exception $ex) {
+            $fecha = date('Y-m-d H:i:s');
+            error_log("\n$fecha => Error en el cambio de estado. Estado fallido: $permitir. [Linea => ".$ex->getLine()."] - [Mensaje => ".$ex->getMessage()."]", 3, "./logs/logs.log");
+        }
     }
 }
 
