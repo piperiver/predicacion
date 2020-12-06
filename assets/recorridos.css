@@ -1,0 +1,30 @@
+.content-dates{
+    display: flex;
+    width: fit-content;
+    margin: 0 auto;
+}
+.item-date{
+    /* flex: 1; */
+}
+.row-date.date{
+    margin-top: 40px;
+}
+.row-date{
+    height: 30px;
+    display: flex;
+    align-items: initial;
+    text-align: right;
+    position: relative;
+}
+.row-days{
+    height: 100px;
+    display: flex;
+    align-items: flex-end;
+    padding-left: 26px;
+}
+.flecha{
+    width: 30px;
+    position: absolute;
+    right: -18px;
+    bottom: -26px;
+}

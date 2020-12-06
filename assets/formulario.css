@@ -1,0 +1,89 @@
+fieldset{
+    padding: 30px;
+    border: 1px solid #ccc;
+    box-shadow: 4px 4px 5px 1px #ccc;
+    margin: 30px 0;
+}
+.content-fieldset{
+    display: inline-grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-column-gap: 15px;
+    column-gap: 80px;
+    grid-row-gap: 15px;
+    row-gap: 40px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+    width: 100%;
+}
+legend{
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #3f51b5;
+}
+.radio{
+    font-weight: normal;
+    cursor: pointer;
+}
+.radio input{
+    width: auto;
+}
+label{
+    display: block;
+    text-transform: capitalize;
+    font-weight: 550;
+}
+input, select{
+    width: 100%;
+    padding: 5px 0;
+    border: none;
+    border-bottom: 1px solid #928989;
+    outline: none;
+    transition: border-bottom 0.5s;
+}
+input:focus, select:focus, input:hover, select:hover{
+    border-color: #3f51b5;
+}
+.content-button{
+    text-align: center;
+}
+.content-button button{
+    outline: none;
+    border: 1px solid #2e3d90;
+    background: #3f51b5;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 30px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s;
+}
+.content-button button:hover{
+    background: #fff;
+    color: #3f51b5;
+    transform: scale(1.1);
+}
+
+.mensaje{
+    text-align: center;
+    padding: 15px;
+    box-shadow: 4px 4px 5px 1px #ccc;
+    font-weight: bold;
+    margin: 15px 0;
+}
+.mensaje.success{
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+.mensaje.danger{
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+@media (max-width: 950px) {
+    .content-fieldset{
+        grid-template-columns: repeat(1,1fr);
+    }
+}

@@ -16,8 +16,9 @@
       <tr>
         <th class="text-center">Usuario</th>
         <!-- <th class="text-center">Creación</th> -->
-        <th class="text-center">Administrador</th>
-        <th class="text-center">Activo</th>
+        <th class="text-center" data-select='true'>Administrador</th>
+        <th class="text-center" data-select='true'>Activo</th>
+        <th class="text-center" data-nofilter='true'>Eliminar</th>
       </tr>
     </thead>
     <tbody>
@@ -36,6 +37,11 @@
                     <option value="1" <?= ($usuario->active)? "selected" : "" ?>>SI</option>
                     <option value="0" <?= (!$usuario->active)? "selected" : "" ?>>NO</option>
                   </select>
+              </td>
+              <td>
+                <span class='material-icons delete-item' data-type='usuario' data-id='<?= $usuario->id ?>'>
+                  delete_forever
+                </span>
               </td>
           </tr>      
         <?php }  ?>
@@ -62,40 +68,50 @@
     <thead>
       <tr>
         <th>Teléfono</th>
-        <th class="text-center">Usado</th>
-        <th class="text-center">Estado</th>
+        <th class="text-center" data-select='true'>Usado</th>
+        <th class="text-center" data-select='true'>Estado</th>
+        <th class="text-center" data-nofilter='true'>Eliminar</th>
+      </tr>
+      <tr>
+        <th class='content-filter text-center'>
+            <input type="text" placeholder="Filtrar" class='search_filter'/>
+        </th>
+        <th class='content-filter text-center'>
+            <select class='search_filter myselect'>
+              <option value="">Todos</option>
+              <option value="SI">SI</option>
+              <option value="NO">NO</option>
+            </select>
+        </th>
+        <th class='content-filter text-center'>
+          <select class='search_filter myselect'>
+              <option value="">Todos</option>
+              <?php foreach($data["estados"] as $estado){ ?>
+                  <option value='<?= $estado->id ?>' ><?= $estado->nombre ?></option>
+              <?php } ?>
+          </select>
+        </th>
+        <th class='content-filter text-center'></th>
       </tr>
     </thead>
     <tbody>
-    <!-- <tr>
-      <td>
-          <input type="text" placeholder="Buscar por '+title+'" />
-      </td>
-      <td>
-          <select>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
-      </td>
-      <td>
-        <select>
-            <?php foreach($data["estados"] as $estado){ ?>
-                <option value='<?= $estado->id ?>' ><?= $estado->nombre ?></option>
-            <?php } ?>
-        </select>
-      </td>
-    </tr> -->
+   
         <?php foreach ($data["telefonos"] as $telefono) { ?>
           <tr data-idtelefono="<?= $telefono->id ?>">
               <td><?= $telefono->telefono ?></td>
               <td class="text-center"><?= ($telefono->usado)? "SI" : "NO" ?></td>
-              <td class="text-center" data-search="<?= constantes("ESTADO_TEXT")[$telefono->estado] ?>">
+              <td class="text-center" data-search="<?= $telefono->estado ?>">
                   <select class="myselect admin-estado">
                       <?php foreach($data["estados"] as $estado){ ?>
                           <!-- <option value='{"estado": <?= $estado->id ?>, "idtelefono": <?= $telefono->id ?>}'  <?= ($estado->id == $telefono->estado)? 'selected' : '' ?>><?= $estado->nombre ?></option> -->
                           <option value='<?= json_encode(["estado" => $estado->id, "idtelefono" => $telefono->id]) ?>'  <?= ($estado->id == $telefono->estado)? 'selected' : '' ?>><?= $estado->nombre ?></option>
                       <?php } ?>
                   </select>
+              </td>
+              <td>
+                <span class='material-icons delete-item' data-type='telefono' data-id='<?= $telefono->id ?>'>
+                  delete_forever
+                </span>
               </td>
           </tr>      
         <?php }  ?>

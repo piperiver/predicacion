@@ -19,14 +19,24 @@ $routes->add('/Admin55210/',function() {
   $controller->administracion();
 }, "get");
 
+$routes->add('/Recorridos/',function() {
+  $controller = new Controller();  
+  $controller->pageRecorridos();
+}, "get");
+
 $routes->add('/Login/',function() {
   $controller = new Controller(false);  
   $controller->login();
 }, "get");
 
-$routes->add('/ChangeStatusPlatform/',function() {
+$routes->add('/PlanEmergencia/',function() {
   $controller = new Controller(false);  
-  $controller->changeStatusPlatform();
+  $controller->planEmergencia();
+}, "get");
+
+$routes->add('/test/',function() {
+  $controller = new Controller(false);  
+  $controller->getReboot();
 }, "get");
 
 
@@ -64,6 +74,11 @@ $routes->add('/GuardarUsuario/',function() {
   echo $controller->guardarUsuario();
 }, "post", "api");
 
+$routes->add('/EliminarUsuario/',function() {
+  $controller = new Controller();  
+  echo $controller->eliminarUsuario();
+}, "post", "api");
+
 $routes->add('/ActualizarUsuario/',function() {
   $controller = new Controller();  
   echo $controller->actualizarUsuario();
@@ -80,7 +95,12 @@ $routes->add('/verificar/',function() {
   $controller->jwt_verificar();
 }, "get", "api");
 
+$routes->add('/guardarPlanEmergencia/',function() {
+  $controller = new Controller();  
+  $controller->guardarPlanEmergencia();
+}, "post", "api");
 
 
-$routes->run("/predicacion");
-// $routes->run("/index.php");
+
+$routes->run("/predicacion"); //DEV
+// $routes->run("/"); //PROD

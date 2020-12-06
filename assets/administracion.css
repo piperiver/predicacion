@@ -5,6 +5,7 @@
 .myTable th,
 .myTable td{
     padding: 0px 10px !important;
+    text-align: center;
 }
 .dataTables_length,
 .dataTables_filter {
@@ -20,7 +21,13 @@
     width: 100%;
     padding: 4px;
     max-width: 160px;
-  }
+}
+.label-filter{
+  display: block;
+}
+.content-filter{
+  background: #ccc;
+}
 
   @media (max-width: 425px) {
     .demo-layout.is-small-screen .demo-content{

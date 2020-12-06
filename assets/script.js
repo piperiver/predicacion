@@ -218,6 +218,35 @@ $(document).on("click", "#btn-save-user", function () {
   );
 });
 
+$(document).on("click", ".delete-item", function () {
+  if(!confirm('¿Confirma que desea eliminar este usuario?')){
+    return false;
+  }
+
+  let id = $(this).data('id');
+  let type = $(this).data('type');
+  let item = $(this);
+
+  $.post(
+    dominio + "EliminarUsuario",
+    {
+      element_id: id,
+      type: type
+    },
+    function (response) {
+      redirect_for_session(response);
+      if (!response.status) {
+        swal(response.message, "", "error");
+        return;
+      }
+      item.parent().parent().hide('slow', function(){
+        $(this).remove();
+      })
+      swal(response.message, "", "success");
+    }
+  );
+})
+
 $(document).on("change", ".updateUser", function () {
   const user = $(this).data("user");
   const update_admin = $(this).parent().parent().find(".admin").val();
@@ -280,21 +309,36 @@ function redirect_for_session(response){
 }
 
 
-function initTable(id){
-  $(id+' thead tr').clone(true).appendTo( id+' thead' );
-    $(id+' thead tr:eq(1) th').each( function (i) {
-        var title = $(this).text();
-        $(this).html( '<input type="text" class="search_filter" placeholder="Buscar '+title+'" />' );
- 
-        $( 'input', this ).on( 'keyup change', function () {
-            if ( table.column(i).search() !== this.value ) {
-                table
-                    .column(i)
-                    .search( this.value )
-                    .draw();
-            }
-        } );
-    } );
+function initTable(id, clone = true){
+
+  if(clone){
+    $(id+' thead tr').clone(true).appendTo( id+' thead' );
+      $(id+' thead tr:eq(1) th').each( function (i) {
+          var title = $(this).text();
+          var select = $(this).data('select');
+          var nofilter = $(this).data('nofilter');
+          if(typeof select != 'undefined' && select == true && nofilter != true){
+            $(this).html( ` 
+                            <select class="myselect search_filter">
+                              <option value=''>Todos</option> 
+                              <option value='SI'>SI</option>
+                              <option value='NO'>NO</option>
+                            </select>
+            ` );
+
+          }else if(nofilter != true){
+
+            $(this).html( `<input type="text" class="search_filter" placeholder="Filtrar" />`);
+          }else if(nofilter == true){
+            $(this).html('');
+          }
+
+          
+          $(this).addClass('content-filter');
+          
+    });
+
+  }
 
   let table = $(id).DataTable({
     orderCellsTop: true,
@@ -330,23 +374,66 @@ function initTable(id){
       },
     },
   });
+
+  setFiltersEvents(table, id);
+}
+
+function setFiltersEvents(table, id){
+
+    $(id+' thead tr:eq(1) th').each( function (i) {
+      
+      if($(this).children().length == 0){
+        return;
+      }
+
+      let node = $(this).children()[0].nodeName;
+      
+      if(node == 'INPUT'){
+
+        $( 'input', this ).on( 'keyup change', function () {
+          if ( table.column(i).search() !== this.value ) {
+              table
+                  .column(i)
+                  .search( this.value )
+                  .draw();
+          }
+        });
+
+      }else if(node == 'SELECT'){
+
+        $( 'select', this ).on( 'change', function () {
+          if ( table.column(i).search() !== this.value ) {
+              table
+                  .column(i)
+                  .search( this.value )
+                  .draw();
+          }
+        });
+
+      }
+    })
 }
 
 $(document).ajaxStart(function() {
-  $(".contet-loading").fadeIn();
+  $(".contet-loading").show();
 });
 
 $(document).ajaxComplete(function() {
-  $(".contet-loading").fadeOut();
+  setTimeout(() => {
+    $(".contet-loading").slideUp();
+  }, 2000);
 });
 
 $(function () {
+  setTimeout(() => {
+    $(".contet-loading").slideUp();
+  }, 2000);
 
   if(typeof login != "undefined" && login){
     swal("Escriba el usuario y la contraseña, luego presione el botón 'ENTRAR'", "", "warning");
   }
 
-  initTable("#tableTelefonos");
   initTable("#tableUsuarios");
+  initTable("#tableTelefonos", false);
   
 });

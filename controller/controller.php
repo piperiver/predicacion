@@ -1,5 +1,5 @@
 <?php
-
+// https://buddy.works/guides/5-ways-to-deploy-php-applications
 include_once('views/views.php');
 
 use ODB\DB\Database;
@@ -50,6 +50,10 @@ class Controller {
         $this->view->render("predicacion.php", []);
     }
 
+    function planEmergencia(){
+        $this->view->render("formulario.php", []);
+    }
+
     function administracion(){
         $this->validar_sesion("administracion");
         $usuarios = self::getDataUsers();
@@ -71,6 +75,13 @@ class Controller {
         $this->view->render("administracion.php", ["telefonos" => $telefonos, "estados" => $estados, "usuarios" => $usuarios]);
     }
 
+    function pageRecorridos(){
+        $this->validar_sesion("recorridos");
+        
+        $reboot = $this->getReboot();
+        $this->view->render("recorridos.php", ["reboot" => $reboot]);
+    }
+
     function consultaTelefonos($query_update = true){
 
         $telefono = $this->db->table('telefonos')
@@ -85,11 +96,48 @@ class Controller {
                 ->where('estado', constantes("ACTIVO"))
                 ->update(["usado" => 0]);
 
+            $this->reboot();
+
             return $this->consultaTelefonos(false);
         }
 
         return $telefono;
     }
+
+    /**
+     * Funcion para insertar la cantidad de vueltas que llevamos
+     */
+    function reboot(){
+        $insert = [
+            "fechaReset" => date("Y-m-d H:i:s")
+        ];
+        $this->db->table('vueltas')->insert($insert);
+    }
+
+    /**
+     * Funcion para obtener las vueltas realizadas
+     */
+    function getReboot(){
+        $reboot = $this->db->table('vueltas')
+                        ->orderBy("id", "ASC")
+                        ->select()->all();
+
+        if(count($reboot) == 0) return [];
+
+        for ($i=0; $i < count($reboot) ; $i++) {
+            $tempFechaInicio = explode(" ", $reboot[$i]->fechaReset);
+            $tempFechaFinal = (isset($reboot[$i+1]->fechaReset))? explode(" ", $reboot[$i+1]->fechaReset) : [date("Y-m-d")];
+            
+            $fechaInicio = new DateTime($tempFechaInicio[0]);
+            $fechaFinal = new DateTime($tempFechaFinal[0]);
+            $diff = $fechaInicio->diff($fechaFinal);
+            
+            $reboot[$i]->dias = $diff->days;
+        }
+
+        return $reboot;
+    }
+
 
     /**
      * Funcion para obtener un numero de telefono de la lista
@@ -98,7 +146,7 @@ class Controller {
     function obtenerTelefono(){
         try {
 
-            if($this->getStatus() != "1"){
+            if(!$this->validateShedule()){
                 return response_json(true, "En este momento no puede predicar porque no es un horario de predicación. La aplicación solo esta activa en horarios de predicación");
             }
             
@@ -267,6 +315,7 @@ class Controller {
             }
 
             $telefonos_input = $_POST["telefonos"];
+            $telefonos_input = str_replace(' ', '', $telefonos_input);
             $telefonos_encontrados = $this->getTelefonosEncontrados($telefonos_input);
 
             $telefonos = explode(",", $telefonos_input);
@@ -326,6 +375,33 @@ class Controller {
             return $this->messageError($ex);
         }
 
+     }
+
+     function eliminarUsuario(){
+         try {
+             $element_id = $_POST["element_id"];
+             $type = $_POST["type"];
+
+             if(!isset($element_id) || $element_id == null){
+                return response_json(false, "Ocurrio un problema, por favor recargue la página e intente de nuevo");
+             }
+
+             if(!isset($type) || $type == null){
+                return response_json(false, "Ocurrio un problema, por favor recargue la página e intente de nuevo");
+             }
+
+
+             if($type == 'usuario'){
+                 $usuario_bd = $this->db->table('usuarios')->find($element_id)->delete();
+             }else if($type == 'telefono'){
+                $usuario_bd = $this->db->table('telefonos')->find($element_id)->delete();
+            }
+
+
+            return response_json(true, "Usuario eliminado exitosamente");
+        } catch (\Exception $ex) {
+            return $this->messageError($ex);
+        }
      }
 
     function getDataUsers(){
@@ -413,7 +489,7 @@ class Controller {
                 header("Location: $ruta");
             }
 
-            if(!$isAdmin && $vista == "administracion"){
+            if(!$isAdmin && in_array($vista, ["administracion", "recorridos"])){
                 if(is_ajax()){
                     echo response_json(false, "", ["redirect_for_session" => ruta("Predicacion")]);
                     die;
@@ -436,43 +512,102 @@ class Controller {
         return $parametro->valor;
     }
 
-    function changeStatusPlatform(){
-        try {
-        
-            $horariosPermitidos = [
-                [
-                    "fechaInicio" => strtotime(date("Y-m-d 08:00:00")),
-                    "fechaFin" => strtotime(date("Y-m-d 12:00:00"))
-                ],
-                [
-                    "fechaInicio" => strtotime(date("Y-m-d 14:00:00")),
-                    "fechaFin" => strtotime(date("Y-m-d 20:00:00"))
-                ]
-            ];
+    function getConfigurationDay(){
+        $dayWeek = date("N");
+        if($dayWeek == 2){ //Martes
+            return constantes('CONFIG_MARTES');
+        } else if($dayWeek == 6 || $dayWeek == 7){ //Sabado o domingo
+            return constantes('CONFIG_SABADO_DOMINGO');
+        }else{
+            return constantes('CONFIG_LUNES_MIERCOLES_JUEVES_VIERNES');
+        }
+    }
 
+    function validateShedule(){
+        try {
+            $horariosPermitidos = $this->getConfigurationDay();
             $fechaActual = strtotime("now");
-            $permitir = 0;
+            $permitir = false;
             foreach ($horariosPermitidos as $horario) {
                 if($fechaActual >= $horario['fechaInicio'] && $fechaActual <= $horario['fechaFin']){
-                    $permitir = 1;
+                    $permitir = true;
                 }
             }
 
-            
-            $this->db->table('parametros')
-                    ->where('id', 1)
-                    ->update(["valor" => $permitir]);
+            return $permitir;
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
 
+    function setLog($message){
+        try {
             if(!is_dir('./logs')){
                 mkdir('./logs');
             }
-            
+
             $fecha = date('Y-m-d H:i:s');
-            error_log("\n$fecha => Cambio de estado realizado correctamente. Nuevo estado: $permitir", 3, "./logs/logs.log");
+            error_log("\n$fecha => $message", 3, "./logs/logs.log");
 
         } catch (\Exception $ex) {
             $fecha = date('Y-m-d H:i:s');
-            error_log("\n$fecha => Error en el cambio de estado. Estado fallido: $permitir. [Linea => ".$ex->getLine()."] - [Mensaje => ".$ex->getMessage()."]", 3, "./logs/logs.log");
+            error_log("\n$fecha => Error [Linea => ".$ex->getLine()."] - [Mensaje => ".$ex->getMessage()."]", 3, "./logs/logs.log");
+        }
+
+    }
+
+    function guardarPlanEmergencia(){
+
+        try {
+            //code...
+
+            $insert = $this->db->table('hermanos')->insert(
+                [
+                    'perfil' => $_POST['perfil'],
+                    'grupo' => $_POST['grupo'],
+                    'nombres' => $_POST['nombres'],
+                    'apellidos' => $_POST['apellidos'],
+                    'direccion' => $_POST['direccion'],
+                    'telefono' => $_POST['telefono'],
+                    'celular1' => $_POST['celular1'],
+                    'celular2' => $_POST['celular2'],
+                    'fecha_nacimiento' => $_POST['fecha_nacimiento'],
+                    'fecha_bautismo' => $_POST['fecha_bautismo'],
+                    'correo' => $_POST['correo'],
+                    'fecha_creacion' => date('Y-m-d H:m:i'),
+                    'fecha_actualizacion' => date('Y-m-d H:m:i'),
+                ]
+            );
+
+            $hermano_id = $insert->lastInsertedId();
+
+
+            for ($i=0; $i < count($_POST['nombres_familiar']); $i++) { 
+                
+                $insertFamiliar = $this->db->table('familiares')->insert(
+                    [
+                        'hermano_id' => $hermano_id,
+                        'nombres' => $_POST['nombres_familiar'][$i],
+                        'apellidos' => $_POST['apellidos_familiar'][$i],
+                        'parentesco' => $_POST['parentesco_familiar'][$i],
+                        'ciudad' => $_POST['ciudad_familiar'][$i],
+                        'telefono' => $_POST['telefono_familiar'][$i],
+                        'celular' => $_POST['celular_familiar'][$i],
+                    ]
+                );
+
+            }
+
+            $_SESSION['formulario_plan']['type'] = 'success';
+            $_SESSION['formulario_plan']['message'] = 'Muchisimas Gracias, la información fue almacenada con exito';
+        
+            header("Location: ".ruta("PlanEmergencia"));
+
+        } catch (\Exception $th) {
+            $_SESSION['formulario_plan']['type'] = 'danger';
+            $_SESSION['formulario_plan']['message'] = 'Ocurrio un problema, por favor recargue la página e intentelo de nuevo';
+
+            header("Location: ".ruta("PlanEmergencia"));
         }
     }
 }
