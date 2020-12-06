@@ -414,6 +414,17 @@ function setFiltersEvents(table, id){
     })
 }
 
+$(document).on("change", "input[name=perfil]", function(){
+  let perfil = $(this).val();
+  if(perfil == 'bautizado'){
+    $(".content-fecha-bautismo").show();
+    $(".content-fecha-bautismo #fecha_bautismo").attr('required', true);
+  }else{
+    $(".content-fecha-bautismo").hide();
+    $(".content-fecha-bautismo #fecha_bautismo").attr('required', false);
+  }
+})
+
 $(document).ajaxStart(function() {
   $(".contet-loading").show();
 });

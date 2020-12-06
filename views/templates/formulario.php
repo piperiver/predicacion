@@ -73,9 +73,9 @@
                 <input type="date" name='fecha_nacimiento' id='fecha_nacimiento' required>
             </div>
 
-            <div class='content-item-form'>
+            <div class='content-item-form content-fecha-bautismo' style='display:none'>
                 <label for="fecha_bautismo">fecha de bautismo</label>
-                <input type="date" name='fecha_bautismo' id='fecha_bautismo' required>
+                <input type="date" name='fecha_bautismo' id='fecha_bautismo'>
             </div>
 
             <div class='content-item-form'>

@@ -572,7 +572,7 @@ class Controller {
                     'celular1' => $_POST['celular1'],
                     'celular2' => $_POST['celular2'],
                     'fecha_nacimiento' => $_POST['fecha_nacimiento'],
-                    'fecha_bautismo' => $_POST['fecha_bautismo'],
+                    'fecha_bautismo' => (isset($_POST['fecha_bautismo']) && !empty($_POST['fecha_bautismo']))? $_POST['fecha_bautismo'] : null,
                     'correo' => $_POST['correo'],
                     'fecha_creacion' => date('Y-m-d H:m:i'),
                     'fecha_actualizacion' => date('Y-m-d H:m:i'),
@@ -597,7 +597,7 @@ class Controller {
                 );
 
             }
-
+            
             $_SESSION['formulario_plan']['type'] = 'success';
             $_SESSION['formulario_plan']['message'] = 'Muchisimas Gracias, la información fue almacenada con exito';
         
