@@ -586,6 +586,8 @@ const updateCards = (hermanosFiltering) => {
     return;
   }
   
+  $("#totalUsuarios").text(hermanosFiltering.length);
+
   hermanosFiltering.map((hermano) => {
     $(`#hermano_${hermano.id}`).fadeIn();
   })

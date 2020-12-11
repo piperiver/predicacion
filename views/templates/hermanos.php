@@ -33,6 +33,10 @@
     </div>
 </div>
 
+<div class="content-total">
+    <h3>Total de usuarios mostrados en pantalla: <span id='totalUsuarios'><?= count($data{"hermanos"}) ?></span></h3>
+</div>
+
 <div class='content-hermanos'>
     <?php foreach($data['hermanos'] as $hermano){ ?>
         <div class="info-hermano dsp-info" id='hermano_<?= $hermano->id ?>' data-id='<?= $hermano->id ?>'>
