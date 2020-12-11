@@ -159,13 +159,13 @@ footer{
 .search_filter{
   margin-bottom: 10px;
 }
-.myTable .delete-item{
+.delete-item{
   font-size: 1.5em !important;
   color: #e00a0a;
   cursor: pointer;
   transition: color 0.3s;
 }
-.myTable .delete-item:hover{
+.delete-item:hover{
   color: #a184f9;
 }
 @media (max-width: 320px) {

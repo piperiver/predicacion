@@ -30,8 +30,9 @@ return [
     /**
      * Ruta principal del proyecto
      */
+
     // "DOMINIO" => "https://canaverales.epizy.com/", //PROD
-    "DOMINIO" => "http://localhost:8888/predicacion/", //DEV
+    "DOMINIO" => (isProduction())? "https://canaverales.epizy.com/" : "http://localhost:8888/predicacion/", //DEV
 
     /**
      * Intentos para actualizar

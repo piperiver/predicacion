@@ -34,9 +34,19 @@ $routes->add('/PlanEmergencia/',function() {
   $controller->planEmergencia();
 }, "get");
 
-$routes->add('/test/',function() {
-  $controller = new Controller(false);  
-  $controller->getReboot();
+$routes->add('/PlanEmergenciaResumen/',function() {
+  $controller = new Controller();  
+  $controller->planEmergenciaResumen();
+}, "get");
+
+$routes->add('/EditarHermano/([0-9]*)/',function($request) {
+  $controller = new Controller();  
+  $controller->editarHermano($request);
+}, "get");
+
+$routes->add('/MigrationDates/',function() {
+  $controller = new Controller();  
+  $controller->migrateDates();
 }, "get");
 
 
@@ -100,7 +110,14 @@ $routes->add('/guardarPlanEmergencia/',function() {
   $controller->guardarPlanEmergencia();
 }, "post", "api");
 
+$routes->add('/actualizarPlanEmergencia/',function() {
+  $controller = new Controller();  
+  $controller->actualizarPlanEmergencia();
+}, "post", "api");
 
 
-$routes->run("/predicacion"); //DEV
-// $routes->run("/"); //PROD
+if(isProduction()){
+  $routes->run("/"); //PROD
+}else{
+  $routes->run("/predicacion"); //DEV
+}

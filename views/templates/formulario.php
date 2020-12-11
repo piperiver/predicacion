@@ -70,12 +70,12 @@
 
             <div class='content-item-form'>
                 <label for="fecha_nacimiento">fecha de nacimiento</label>
-                <input type="date" name='fecha_nacimiento' id='fecha_nacimiento' required>
+                <input type="text" name='fecha_nacimiento' id='fecha_nacimiento' class='my-datepicker' readonly required>
             </div>
 
             <div class='content-item-form content-fecha-bautismo' style='display:none'>
                 <label for="fecha_bautismo">fecha de bautismo</label>
-                <input type="date" name='fecha_bautismo' id='fecha_bautismo'>
+                <input type="text" name='fecha_bautismo' id='fecha_bautismo' class='my-datepicker' readonly>
             </div>
 
             <div class='content-item-form'>

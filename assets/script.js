@@ -219,7 +219,7 @@ $(document).on("click", "#btn-save-user", function () {
 });
 
 $(document).on("click", ".delete-item", function () {
-  if(!confirm('¿Confirma que desea eliminar este usuario?')){
+  if(!confirm('¿Confirma que desea eliminar este elemento?')){
     return false;
   }
 
@@ -239,9 +239,16 @@ $(document).on("click", ".delete-item", function () {
         swal(response.message, "", "error");
         return;
       }
-      item.parent().parent().hide('slow', function(){
-        $(this).remove();
-      })
+      if(type == 'hermano'){
+        item.parent().hide('slow', function(){
+          $(this).remove();
+        })
+      }else{
+        item.parent().parent().hide('slow', function(){
+          $(this).remove();
+        })
+      }
+
       swal(response.message, "", "success");
     }
   );
@@ -425,6 +432,165 @@ $(document).on("change", "input[name=perfil]", function(){
   }
 })
 
+
+
+
+
+$(document).on('click', '.dsp-info', function(){
+  let id = $(this).data('id');
+  $(`#hermano_${id} .content-info`).slideToggle();
+  $(`#hermano_${id}`).toggleClass('open')
+})
+
+$(document).on('click', '#desplegarTodos', function(){
+  let desplegar = $(this).data('desplegar');
+  if(desplegar){
+    //preparamos la contraccion para el siguiente click
+    $(this).data('desplegar', false);
+    $(this).text('CONTRAER TODOS');
+
+    //desplegamos y agregamos la clase pertinente
+    $('.content-info').show();
+    $('.info-hermano').addClass('open')
+  }else{
+    //preparamos el despliegue para el siguiente click
+    $(this).data('desplegar', true);
+    $(this).text('DESPLEGAR TODOS');
+
+    //contraemos y agregamos la clase pertinente
+    $('.content-info').hide();
+    $('.info-hermano').removeClass('open')
+  }
+})
+
+const templateNombres = () => {
+  return `
+    <label for="filterName"><strong>Nombre</strong></label>
+    <div class="buttonInput">
+    <div>
+      <input type="text" id="filterName" placeholder="Escriba el nombre aquí">
+      </div>
+      <div>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" id="filterNameButton">
+          BUSCAR
+      </button>
+      </div>
+    </div>
+  `;
+}
+const templateSelect = (object) => {
+  return `
+  <label for="filterColumn"><strong>${filterColumnSelected.toUpperCase()}</strong></label>
+  <select id="filterColumn">
+    <option value="">Mostrar Todos</option>
+    ${
+      Object.entries(object).map((data) => {
+        let [key, value] = data;
+        return `<option value='${key}'>${value}</option>`
+      }).join('')
+    }
+  </select>
+  `;
+}
+
+let filterColumnSelected = '';
+
+$(document).on('change', '#filterFor', function(){
+  $('#contentFilterHermanos').html('');
+  let value = $(this).val();
+
+  if(value == ''){
+    updateCards(hermanos);
+    return;
+  }
+
+  let html = '';
+
+  if(value == 'nombres'){
+    html = templateNombres();
+  }else if(value == 'grupo'){
+    filterColumnSelected = 'grupo';
+    html = templateSelect(grupos);
+    
+  }else if(value == 'perfil'){
+    filterColumnSelected = 'perfil';
+    html = templateSelect(perfiles);
+  }
+
+  $('#contentFilterHermanos').html(html);
+  updateCards(hermanos);
+})
+
+const filterForColumn = (column, value) => {
+  if(typeof hermanos == 'undefined'){
+    return false;
+  }
+
+  return hermanos.filter(hermano => hermano[column].toLowerCase().indexOf(value)  >= 0);
+}
+
+const filterForName = (value) => {
+  if(typeof hermanos == 'undefined'){
+    return false;
+  }
+
+  return hermanos.filter(hermano => {
+    let nombreCompleto = `${hermano.nombres} ${hermano.apellidos}`;
+    let resultado = nombreCompleto.toLowerCase().indexOf(value.toLowerCase());
+    return resultado !== -1;
+  });
+}
+
+$(document).on('change', '#filterColumn', function(){
+  let val = $(this).val();
+  if(val == ''){
+    updateCards(hermanos);
+    return;
+  }
+  
+  const hermanosFiltering = filterForColumn(filterColumnSelected, val);
+  updateCards(hermanosFiltering);
+
+})
+
+$(document).on('click', '#filterNameButton', function(){
+  let val = $('#filterName').val();
+  if(val == ''){
+    updateCards(hermanos);
+    return;
+  }
+
+  const hermanosFiltering = filterForName(val);
+  updateCards(hermanosFiltering);
+})
+
+const desplegarToast = (mensaje) => {
+  const snackbarContainer = document.querySelector('#toast');
+  const data = {
+    message: mensaje,
+    timeout: 3000
+  };
+  snackbarContainer.MaterialSnackbar.showSnackbar(data);
+}
+
+const updateCards = (hermanosFiltering) => {
+  
+  if(hermanosFiltering === false){
+    return false;
+  }
+
+  $('.info-hermano').hide();
+
+  if(hermanosFiltering.length === 0){
+    desplegarToast('No hay resultados que coincidan con los filtros especificados');
+    return;
+  }
+  
+  hermanosFiltering.map((hermano) => {
+    $(`#hermano_${hermano.id}`).fadeIn();
+  })
+}
+
 $(document).ajaxStart(function() {
   $(".contet-loading").show();
 });
@@ -434,6 +600,20 @@ $(document).ajaxComplete(function() {
     $(".contet-loading").slideUp();
   }, 2000);
 });
+
+function initCalendar(){
+  $( ".my-datepicker" ).datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: 'yy-mm-dd',
+    yearRange: '1920:2030',
+    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    monthNamesShort: ['Ene','Feb','Mar','Abr', 'May','Jun','Jul','Ago','Sep', 'Oct','Nov','Dic'],
+    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    dayNamesShort: ['Dom','Lun','Mar','Mié','Juv','Vie','Sáb'],
+    dayNamesMin: ['Do','Lu','Ma','Mi','Ju','Vi','Sá'],
+  });
+}
 
 $(function () {
   setTimeout(() => {
@@ -447,4 +627,6 @@ $(function () {
   initTable("#tableUsuarios");
   initTable("#tableTelefonos", false);
   
+
+  initCalendar();
 });

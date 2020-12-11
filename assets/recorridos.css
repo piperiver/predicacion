@@ -28,3 +28,17 @@
     right: -18px;
     bottom: -26px;
 }
+@media (max-width: 500px) {
+    .row-date{
+        text-align: left;
+    }
+    .demo-layout.is-small-screen .demo-content{
+        padding: 15px;
+    }
+    .flecha{
+        right: 0;
+    }
+    .row-days{
+        padding-left: 10px;
+    }
+}

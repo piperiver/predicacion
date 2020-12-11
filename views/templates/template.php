@@ -51,8 +51,9 @@
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-red.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    
 
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/start/jquery-ui.css">
+    
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
     <!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.css"/> -->
 
@@ -133,6 +134,7 @@
                   <li class="mdl-menu__item"><a href="<?= ruta("Admin55210") ?>">Administraci&oacute;n</a></li>
                   <li class="mdl-menu__item"><a href="<?= ruta("Recorridos") ?>">Recorridos</a></li>
                   <li class="mdl-menu__item"><a href="<?= ruta("Predicacion") ?>">Predicaci&oacute;n</a></li>
+                  <li class="mdl-menu__item"><a href="<?= ruta("PlanEmergenciaResumen") ?>">Lista de Hermanos</a></li>
                 <?php } ?>
 
                 <?php if(is_session()){ ?>
@@ -159,6 +161,16 @@
         <div class="demo-container mdl-grid">
           <div class="mdl-cell mdl-cell--2-col mdl-cell--hide-tablet mdl-cell--hide-phone"></div>
           <div class="demo-content mdl-color--white mdl-shadow--4dp content mdl-color-text--grey-800 mdl-cell mdl-cell--8-col content-card">
+
+            <?php if(isset($_SESSION['message'])){ ?>
+                <div class='mensaje <?= $_SESSION['message']['type'] ?>'>
+                    <?= $_SESSION['message']['message'] ?>
+                </div>
+            <?php 
+                unset($_SESSION['message']);
+                } 
+            ?>
+
                 <?php include "views/templates/$vista"; ?>
           </div>
         </div>
@@ -184,6 +196,10 @@
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script
+            src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
     <!-- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/r-2.2.6/datatables.min.js"></script> -->
 
     <script>
@@ -198,7 +214,8 @@
       dialog.querySelector('.close').addEventListener('click', function() {
         dialog.close();
       });
+
     </script>
-    <script src="<?= dominio("assets/script.js") ?>"></script>
+    <script src="<?= dominio("assets/script.js?time=".time()) ?>"></script>
   </body>
 </html>
