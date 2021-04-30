@@ -29,11 +29,11 @@
         <div class="content-fieldset">
             <div class='content-item-form'>
                 <label for="perfil">Usted es</label>
-                <?php foreach(constantes('PERFIL_HERMANO') as $key => $perfil){ ?>
+                <?php foreach(constantes('PERFIL_HERMANO') as $perfilCodigo => $perfilTexto){ ?>
                     <div>
                         <label class='radio'>
-                            <input type="radio" name='perfil' value="<?= $key ?>" <?= ($key == 'estudiante')? 'required' : '' ?> <?= ($data['hermano']->perfil == $key)? 'checked' : '' ?>>
-                            <?= $perfil ?>
+                            <input type="radio" name='perfil' value="<?= $perfilCodigo ?>" <?= ($perfilCodigo == constantes("PERFIL_ESTUDIANTE"))? 'required' : '' ?> <?= ($data['hermano']->perfil == $perfilCodigo)? 'checked' : '' ?>>
+                            <?= $perfilTexto ?>
                         </label>
                     </div>
                 <?php } ?>
@@ -83,10 +83,9 @@
                 <label for="fecha_nacimiento">fecha de nacimiento</label>
                 <input type="text" name='fecha_nacimiento' id='fecha_nacimiento' class='my-datepicker' readonly required value='<?= date('Y-m-d', strtotime($data['hermano']->nacimiento)) ?>'>
             </div>
-
-            <div class='content-item-form content-fecha-bautismo' style='display:none'>
+            <div class='content-item-form content-fecha-bautismo' style='<?= $data['hermano']->perfil == constantes("PERFIL_BAUTIZADO")? '' : 'display:none' ?>'>
                 <label for="fecha_bautismo">fecha de bautismo</label>
-                <input type="text" name='fecha_bautismo' id='fecha_bautismo' class='my-datepicker' readonly value='<?= date('Y-m-d', strtotime($data['hermano']->bautismo)) ?>'>
+                <input type="text" name='fecha_bautismo' id='fecha_bautismo' class='my-datepicker' readonly value='<?= ($data['hermano']->bautismo == '0000-00-00' || $data['hermano']->bautismo == null)? '' : date('Y-m-d', strtotime($data['hermano']->bautismo)) ?>'>
             </div>
 
             <div class='content-item-form'>

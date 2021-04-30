@@ -1,5 +1,9 @@
 <?php
 
+$estudiante = 'estudiante';
+$publicado_no_bautizado = 'publicado_no_bautizado';
+$bautizado = 'bautizado';
+
 return [
     "AMBIENTE" => "DEV", //PROD //DEV
     /**
@@ -69,10 +73,14 @@ return [
      * Mocks Plan de emergencia
      */
     "PERFIL_HERMANO" => [
-        "estudiante" => "Estudiante",
-        "publicado_no_bautizado" => "Publicador no bautizado",
-        "bautizado" => "Bautizado",
+        $estudiante => "Estudiante",
+        $publicado_no_bautizado => "Publicador no bautizado",
+        $bautizado => "Bautizado",
     ],
+
+    "PERFIL_ESTUDIANTE" => $estudiante,
+    "PERFIL_PUB_NO_BAUTI" => $publicado_no_bautizado,
+    "PERFIL_BAUTIZADO" => $bautizado,
 
     "GRUPOS_CONGRE" => [
         "1" => "Grupo 1 - Alberto Rios",
